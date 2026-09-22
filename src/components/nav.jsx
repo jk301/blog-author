@@ -28,11 +28,11 @@ function Nav ({ logged, setLogged }) {
 
     return (
         <nav>
-            <Link to='/'><h1>Bloggy</h1></Link>
+            <Link to='/'><h1>Bloggy-author</h1></Link>
             { logged 
-                ? <div>
-                    <div className="nav-but"><button onClick={handleLogout} >Logout</button></div>
+                ? <div className="nav-but">
                     <div className="nav-but"><button onClick={handlePost}>Create a post</button></div>
+                    <div className="nav-but"><button onClick={handleLogout} >Logout</button></div>
                     </div>
                 : <div className="nav-but">
                     <NavLink to='/register'>Sign up</NavLink>
