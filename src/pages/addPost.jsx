@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import '../styles/login.css'
+import '../styles/addPost.css'
 
 function AddPost({ logged }) {
     const [title, setTitle] = useState('')
@@ -26,11 +26,6 @@ function AddPost({ logged }) {
                     body: JSON.stringify({ title, content })
                 })
 
-                // if (res.status === 401) {
-                //     setError('Invalid email or password.')
-                //     return
-                // }
-
                 const data = await res.json()
 
                 if (!res.ok) {
@@ -39,6 +34,8 @@ function AddPost({ logged }) {
                 }
 
                 navigate('/')
+            } else {
+                setError("You must be logged in.")
             }
 
         } catch (err) {
@@ -58,12 +55,14 @@ function AddPost({ logged }) {
                 id="title"
                 value={title}
                 onChange={(e) => {setTitle(e.target.value)}} 
+                placeholder="Post title here."
                 required
             />
             <textarea
-                id="content" 
-                value={content} 
-                onChange={(e) => {setContent(e.target.value)}} 
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)} 
+                placeholder="Post content here."
                 required
             />
             <button type="submit" >Post(unpublished)</button>
