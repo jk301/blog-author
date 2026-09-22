@@ -8,8 +8,15 @@ import '../styles/postView.css'
 function Postview () {
     const { postId } = useParams()
     const [post, setPost] = useState(null)
+
+    const [editPost, setEditPost] = useState(false)
+    const [editTitle, setEditTitle] = useState('')
+    const [editContent, setEditContent] = useState('')
+    // const [postError, setPostError] = useState('')
+
     const [comment, setComment] = useState('')
     const [comError, setComError] = useState('')
+
     const [editId, setEditId] = useState(null)
     const [editText, setEditText] = useState('')
     const [error, setError] = useState('')
@@ -83,6 +90,40 @@ function Postview () {
         }
     }
 
+    async function handlePostEdit(e) {
+        e.preventDefault()
+
+        try {
+            const token = localStorage.getItem('token')
+            console.log('got token')
+            const res = await fetch(
+                `http://localhost:3000/author/posts/${postId}/edit`, 
+                {
+                    method: 'PUT', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}` 
+                    }, 
+                    body: JSON.stringify({ title: editTitle, content: editContent })
+                }
+            )
+
+            if (!res.ok) {
+                console.log("This is inside !res.ok failed:((")
+                return 
+            }
+
+            setEditTitle('')
+            setEditContent('')
+            setEditPost(false)
+            getPost()
+
+        } catch (error) {
+            console.log(error)
+            setError(error.message)
+        }
+    }
+
     async function handleComEdit(e, commentId) {
         e.preventDefault()
 
@@ -109,6 +150,7 @@ function Postview () {
 
             setEditId(null)
             setEditText('')
+            
             getPost()
 
         } catch (error) {
@@ -150,8 +192,47 @@ function Postview () {
 
     return (
         <div className="post-view">
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
+            {editPost 
+                ?  <form onSubmit={(e) => {handlePostEdit(e)}}>
+                        <label htmlFor="title">Title</label>
+                        <input 
+                            type="text" 
+                            id="title"
+                            value={editTitle}
+                            onChange={(e) => {setEditTitle(e.target.value)}} 
+                            placeholder="Post title here."
+                            required
+                        />
+                        <label htmlFor="content">Content</label>
+                        <textarea
+                            id="content"
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)} 
+                            placeholder="Post content here."
+                            required
+                        />
+                        <button type="submit" >Submit changes</button>
+                        <button type="button" onClick={() => setEditPost(false)}>Cancel</button>
+                    </form>
+                : <div className="post-detail">
+                    <h2>{post.title}</h2>
+                    <p>{post.content}</p>
+                </div>
+            }
+            <div className="post-change-but">
+                {!editPost 
+                    && <button 
+                            onClick={() => {
+                                setEditPost(true)
+                                setEditTitle(post.title)
+                                setEditContent(post.content)
+                            }}
+                        >
+                            Edit post
+                        </button>
+                }
+                
+            </div>
             <div className="comment-input">
                 {comError && <p>{comError}</p>}
                 <form onSubmit={handlePostComment}>
@@ -186,8 +267,7 @@ function Postview () {
                                 </button>
                                 </form>
                             : <div>
-                                <p className="comment-author">@{com.name}</p>  
-                                <p>{dayjs(com.createdAt).format('MMM D, YYYY h:mm A')}</p>
+                                <p className="comment-author">@{com.name} // {dayjs(com.createdAt).format('MMM D, YYYY h:mm A')}</p>
                                 <h3>{com.content}</h3>
                                 {com.userId === userId 
                                     && <button onClick={() => {
@@ -196,11 +276,14 @@ function Postview () {
                                     }}>Edit comment</button> 
                                 }
                                 {com.userId === userId 
-                                    && <button onClick={() => handleComDel(com.id)}>Delete comment</button> 
+                                    && <button 
+                                        onClick={() => handleComDel(com.id)}
+                                        >
+                                            Delete comment
+                                        </button> 
                                 }
                             </div>
                         }
-                        
                     </div>
                 ))}
             </div>
