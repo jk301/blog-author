@@ -53,13 +53,28 @@ function Home({ logged }) {
         }
     }
 
-    // async function handleDeletePost (postId) {
-    //     try {
-            
-    //     } catch (error) {
-            
-    //     }
-    // }
+    async function handleDelPost (postId) {
+        try {
+            if (!logged) return 
+            const token = localStorage.getItem("token")
+            const res = await fetch(`http://localhost:3000/author/posts/${postId}/delete`, 
+            { 
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}` 
+                }
+            })
+
+            if (!res.ok) {
+                console.log('delete failed')
+                return 
+            }
+            fetchPosts()
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     if (loading) return <div className="status-msg"><p>Fetching posts..</p></div>
 
@@ -102,8 +117,8 @@ function Home({ logged }) {
                                     : 'Unpublish' 
                                 }
                             </button>
-                            <button>Edit</button>
-                            <button>Delete</button>
+                            {/* <button>Edit</button> */}
+                            <button onClick={() => handleDelPost(post.id)}>Delete</button>
                         </div>
                     </div>
                 ))}
