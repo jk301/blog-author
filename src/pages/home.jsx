@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 
 import '../styles/home.css'
@@ -8,35 +8,60 @@ function Home({ logged }) {
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState('all')
 
-    useEffect(() => {
-        async function fetchPosts() {
-            try {
-                if (logged) {
-                    console.log('fetching ')
-                    const token = localStorage.getItem("token")
-                    const res = await fetch('http://localhost:3000/author/posts', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${token}` 
-                        }
-                    })
-                    const data = await res.json()
-                    setPosts(data.posts || [])
-                }
+    const fetchPosts = useCallback(async () => {
+        try {
+            if (logged) {
+                console.log('fetching token')
+                const token = localStorage.getItem("token")
+                const res = await fetch('http://localhost:3000/author/posts', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}` 
+                    }
+                })
+                const data = await res.json()
+                setPosts(data.posts || [])
+            }
             } catch (error) {
                 console.log(error)
             } finally {
                 setLoading(false)
             }
-        }
-
+    }, [logged]) 
+    
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchPosts()
-    }, [logged])
+    }, [logged, fetchPosts])
+
+    async function handlePub (status, postId) {
+        try {
+            if (!logged) return 
+            const token = localStorage.getItem("token")
+            const endpoint = status ? 'publish' : 'unpublish'
+            await fetch(`http://localhost:3000/author/posts/${postId}/${endpoint}`, 
+            { 
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}` 
+                }
+            })
+            fetchPosts()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // async function handleDeletePost (postId) {
+    //     try {
+            
+    //     } catch (error) {
+            
+    //     }
+    // }
 
     if (loading) return <div className="status-msg"><p>Fetching posts..</p></div>
-    if (!loading && posts.length === 0) {
-        return <div className="status-msg"><p>No posts yet.</p></div>
-    }
 
     const filPosts = posts.filter( post => {
         if (filter === 'unpub') return !post.isPub 
@@ -68,7 +93,18 @@ function Home({ logged }) {
                     <div key={post.id} className="post-div" >
                         <Link to={`/posts/${post.id}`}>
                             <h2>{ post.title }</h2>
+                            <p>{ post.isPub ? '[Published]' : '[Unpublished]' }</p>
                         </Link>
+                        <div className="post-but">
+                            <button onClick={() => handlePub(!post.isPub, post.id)}>
+                                { !post.isPub 
+                                    ? 'Publish' 
+                                    : 'Unpublish' 
+                                }
+                            </button>
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </div>
                     </div>
                 ))}
             </div> 

@@ -41,3 +41,23 @@
 .active-tab {
   font-size: 30px;
 }
+
+.post-but {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.post-but button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.post-but button:hover {
+  background-color: #333;
+  color: #fff;
+}
