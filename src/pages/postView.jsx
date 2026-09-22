@@ -159,6 +159,33 @@ function Postview () {
         }
     }
 
+    async function handleAuthDelCom (commentId) {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await fetch(
+                `http://localhost:3000/author/posts/${postId}/comments/${commentId}/delete`, 
+                {
+                method: 'DELETE', 
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}` 
+                }}
+            )
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                setComError(data.error || "Could not delete comment :(")
+                return 
+            }
+
+            getPost()
+        } catch (error) {
+            console.log(error)
+            setComError('Network error.')
+        }
+    }
+
     async function handleComDel (commentId) {
         try {
             const token = localStorage.getItem('token')
@@ -276,11 +303,16 @@ function Postview () {
                                     }}>Edit comment</button> 
                                 }
                                 {com.userId === userId 
-                                    && <button 
+                                    ? <button 
                                         onClick={() => handleComDel(com.id)}
                                         >
                                             Delete comment
                                         </button> 
+                                    : <button 
+                                        onClick={() => handleAuthDelCom(com.id)}
+                                        >
+                                        Delete comment
+                                        </button>
                                 }
                             </div>
                         }
