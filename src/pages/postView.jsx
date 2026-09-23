@@ -246,6 +246,10 @@ function Postview () {
                     <p>{post.content}</p>
                 </div>
             }
+            <div className="post-auth-detail">
+                <h3>Posted by [{post.username}]</h3>
+                <p>Posted at {dayjs(post.createdAt).format('MMM D, YYYY ')}</p>
+            </div>
             <div className="post-change-but">
                 {!editPost 
                     && <button 
@@ -294,7 +298,12 @@ function Postview () {
                                 </button>
                                 </form>
                             : <div>
-                                <p className="comment-author">@{com.name} // {dayjs(com.createdAt).format('MMM D, YYYY h:mm A')}</p>
+                                <p className="comment-author">
+                                    @{com.name} 
+                                    {com.userId === post.userId ? " [Author] " : ''}
+                                    //  
+                                    {dayjs(com.createdAt).format(' MMM D, YYYY h:mm A')}
+                                </p>
                                 <h3>{com.content}</h3>
                                 {com.userId === userId 
                                     && <button onClick={() => {
