@@ -17,7 +17,7 @@ function AddPost({ logged }) {
         try {
             if (logged) {
                 const token = localStorage.getItem("token")
-                const res = await fetch('http://localhost:3000/author/posts', {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/author/posts`, {
                     method: 'POST', 
                     headers: {
                         'Content-Type': 'application/json',

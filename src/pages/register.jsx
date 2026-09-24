@@ -31,7 +31,7 @@ function Register({ logged }) {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/main/register', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/main/register`, {
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ email, username, password })

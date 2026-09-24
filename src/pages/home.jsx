@@ -13,7 +13,7 @@ function Home({ logged }) {
             if (logged) {
                 console.log('fetching token')
                 const token = localStorage.getItem("token")
-                const res = await fetch('http://localhost:3000/author/posts', {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/author/posts`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}` 
@@ -39,7 +39,7 @@ function Home({ logged }) {
             if (!logged) return 
             const token = localStorage.getItem("token")
             const endpoint = status ? 'publish' : 'unpublish'
-            await fetch(`http://localhost:3000/author/posts/${postId}/${endpoint}`, 
+            await fetch(`${import.meta.env.VITE_API_URL}/author/posts/${postId}/${endpoint}`, 
             { 
                 method: "PATCH",
                 headers: {
@@ -57,7 +57,7 @@ function Home({ logged }) {
         try {
             if (!logged) return 
             const token = localStorage.getItem("token")
-            const res = await fetch(`http://localhost:3000/author/posts/${postId}/delete`, 
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/author/posts/${postId}/delete`, 
             { 
                 method: "DELETE",
                 headers: {

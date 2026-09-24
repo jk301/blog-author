@@ -12,7 +12,6 @@ function Postview () {
     const [editPost, setEditPost] = useState(false)
     const [editTitle, setEditTitle] = useState('')
     const [editContent, setEditContent] = useState('')
-    // const [postError, setPostError] = useState('')
 
     const [comment, setComment] = useState('')
     const [comError, setComError] = useState('')
@@ -36,7 +35,7 @@ function Postview () {
     async function getPost () {
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:3000/author/posts/${postId}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/author/posts/${postId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
 
@@ -64,7 +63,7 @@ function Postview () {
 
         try {
             const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:3000/main/posts/${postId}/comments`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/main/posts/${postId}/comments`, {
                 method: 'POST', 
                 headers: { 
                     'Content-Type': 'application/json',
@@ -97,7 +96,7 @@ function Postview () {
             const token = localStorage.getItem('token')
             console.log('got token')
             const res = await fetch(
-                `http://localhost:3000/author/posts/${postId}/edit`, 
+                `${import.meta.env.VITE_API_URL}/author/posts/${postId}/edit`, 
                 {
                     method: 'PUT', 
                     headers: { 
@@ -130,7 +129,7 @@ function Postview () {
         try {
             const token = localStorage.getItem('token')
             const res = await fetch(
-                `http://localhost:3000/main/posts/${postId}/comments/${commentId}/edit`, 
+                `${import.meta.env.VITE_API_URL}/main/posts/${postId}/comments/${commentId}/edit`, 
                 {
                     method: 'PUT', 
                     headers: { 
@@ -163,7 +162,7 @@ function Postview () {
         try {
             const token = localStorage.getItem('token')
             const res = await fetch(
-                `http://localhost:3000/author/posts/${postId}/comments/${commentId}/delete`, 
+                `${import.meta.env.VITE_API_URL}/author/posts/${postId}/comments/${commentId}/delete`, 
                 {
                 method: 'DELETE', 
                 headers: { 
@@ -190,7 +189,7 @@ function Postview () {
         try {
             const token = localStorage.getItem('token')
             const res = await fetch(
-                `http://localhost:3000/main/posts/${postId}/comments/${commentId}/delete`, 
+                `${import.meta.env.VITE_API_URL}/main/posts/${postId}/comments/${commentId}/delete`, 
                 {
                 method: 'DELETE', 
                 headers: { 
